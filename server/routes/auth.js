@@ -4,10 +4,11 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 
-const { User } = require('../db/User.js');
+const  {User}  = require('../db/User.js');
 
 const app = express();
 // file storage
+__dirname = 'server';
 app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -62,10 +63,11 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials." });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" })
+        delete user.password;
         res.status(200).json({ token, user });
     } else {
         res.status(403).json({ message: "User does not exist." });
     }
 });
 
-module.exports = router
+module.exports = router;

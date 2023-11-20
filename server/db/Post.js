@@ -6,20 +6,22 @@ const postSchema = new mongoose.Schema({
     userId: { type: String },
     firstName: { type: String },
     lastName: { type: String },
-    userPicturePath: { type: String },
     picturePath: String,
     description: String,
     userPicturePath: String,
     likes: {
         type: Map,
-        of: boolean
+        of: Boolean,
     },
     comments: {
         type: Array,
-        default: []
+        default: [],
     }
 });
 
 const Post = mongoose.model("Post", postSchema);
 
-export default Post;
+
+module.exports = {
+    Post
+}

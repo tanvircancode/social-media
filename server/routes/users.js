@@ -1,6 +1,6 @@
 
 const express = require("express");
-const {authenticateJwtUser} = require('../middleware/auth')
+const authenticateJwtUser = require('../middleware/auth.js')
 
 const { User } = require('../db/User.js');
 
@@ -16,4 +16,4 @@ router.get("/:id" , authenticateJwtUser ,  async (req, res) => {
     }
 })
 
-module.exports = router
+module.exports = router;

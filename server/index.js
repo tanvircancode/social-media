@@ -11,9 +11,15 @@ const morgan = require('morgan');
 const path = require('path');
 const { fileURLToPath } = require('url');
 const {authenticateJwtUser} = require("./middleware/auth.js");
-const {authRoutes} = require('./routes/auth.js')
-const {userRoutes} = require('./routes/users.js')
-const {postRoutes} = require('./routes/posts.js')
+const authRoutes = require('./routes/auth.js')
+const userRoutes = require('./routes/users.js')
+const postRoutes = require('./routes/posts.js')
+const {User} = require('./db/User.js');
+const {Post} = require('./db/Post.js');
+const {users, posts} = require('./data/index.js');
+
+
+
 
 
 dotenv.config();
@@ -25,8 +31,8 @@ app.use(cors());
 app.use(helmet());
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(morgan('common'));
-bodyParser.urlencoded({ limit: '30mb', extended: true });
-bodyParser.json({ limit: '30mb', extended: true });
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
+app.use(bodyParser.json({ limit: '30mb', extended: true }));
 app.use("/assets", express.static(path.join(__dirname, 'public/assets')));
 
 const storage = multer.diskStorage({
@@ -48,9 +54,6 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 
-
-
-
 // Connection
 const PORT = process.env.PORT || 6001;
 mongoose.connect(
@@ -60,4 +63,7 @@ mongoose.connect(
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
+
+    // User.insertMany(users);
+    // Post.insertMany(posts);
   });

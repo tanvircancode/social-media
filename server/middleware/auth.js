@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-export const authenticateJwtUser = (req, res, next) => {
+ const authenticateJwtUser = (req, res, next) => {
 
     const authHeader = req.headers.authorization;
    
@@ -19,3 +19,5 @@ export const authenticateJwtUser = (req, res, next) => {
       return res.status(401).send("Access Denied");
     }
 }
+
+module.exports = authenticateJwtUser
