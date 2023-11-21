@@ -34,7 +34,7 @@ router.post("/register", upload.single("picture"), async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user) {
-        res.status(403).json({ message: "Email already exists" });
+        res.status(403).json({ message: "Email already exists" , status: false});
     }
     else {
 
@@ -47,7 +47,7 @@ router.post("/register", upload.single("picture"), async (req, res) => {
             picturePath
         });
         const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
+        res.status(201).json({savedUser, status: true});
     }
 
 });
@@ -60,11 +60,11 @@ router.post("/login", async (req, res) => {
     if (user) {
         const result = await bcrypt.compare(password, user.password);
         if (!result) {
-            return res.status(400).json({ message: "Invalid credentials." });
+            return res.status(400).json({ message: "Invalid credentials.", status : false });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" })
         delete user.password;
-        res.status(200).json({ token, user });
+        res.status(200).json({ token, user , status : true });
     } else {
         res.status(403).json({ message: "User does not exist." });
     }
