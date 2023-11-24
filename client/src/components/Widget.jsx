@@ -1,25 +1,54 @@
 import {
-  CardActionArea,
-  CardMedia,
-  CardContent,
   Card,
-  Grid,
-  Button,
   Typography,
-  CircularProgress,
+  useMediaQuery,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "../config";
+import { HomeOutlined, NotificationsNoneOutlined, LogoutOutlined, Person2Outlined, ControlPointOutlined } from "@mui/icons-material";
+import { setLogout } from "../store";
 
 
-export default function Widget() {
+export default function Widget({ userId, picturePath }) {
 
+  const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
+
+  const matches = useMediaQuery('(min-width:900px)');
+  const matchesMov = useMediaQuery('(max-width:640px)');
+
+  const styleWidget = {
+    width: '100%',
+    padding: 20,
+    minHeight: 200,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    margin: 40,
+    borderRadius: '0.75rem'
+  };
+  const styleWidgetMov = {
+    width: '100%',
+    padding: 20,
+    display: 'flex',
+    justifyContent: 'space-around',
+    gap: '0.75em',
+    borderRadius: '0.75rem',
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 100,
+    boxSizing: 'border-box',
+  };
+
+  // const buttonStyle= {
+
+  // }
+
 
   const fetchUser = async () => {
     const response = await fetch(`${BASE_URL}/users/${userId}`, {
@@ -48,72 +77,135 @@ export default function Widget() {
   const { firstName, lastName } = user;
 
   return (
-    <Box style={{ padding: '2em', backgroundColor: '#FFFFFF', borderRadius: '0.5em' }}>
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: '2px'
-      }}>
-        <img src={picturePath} style={{ width: 50, height: 50,objectFit: "cover", borderRadius: "50%" }} alt="user" />
-        <Typography
-              variant="h4"
-              color={dark}
-              fontWeight="500"
-              style={{
-                  cursor: "pointer",
-              }}
-            >
-              {firstName} {lastName}
-            </Typography>
-      </div>
+    <div>
 
       <Card
         variant="outlined"
-        style={{
-          width: 300,
-          padding: 40,
-          minHeight: 200,
-          margin: 10,
-        }}
+        style={matches ? styleWidget : styleWidgetMov}
       >
-        <Typography textAlign="center" variant="h4">
-          {course.title}
-        </Typography>
-        <Typography textAlign="center" variant="h6">
-          {course.description}
-        </Typography>
-        <Typography textAlign={"center"} variant="h6">
-          {course.price}
-        </Typography>
-        <img
-          src={course.imageLink}
-          style={{ width: 300, height: 250, objectFit: "cover" }}
-        />
-        <div
-          style={{ display: "flex", justifyContent: "center", marginTop: 20 }}
-        >
-          {role == "admin" ? (
-            <Button
-              variant="contained"
-              onClick={() => {
-                navigate("/course/" + course._id);
-              }}
-            >
-              Edit
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              onClick={() => {
-                navigate("/purchasecourse/" + course._id);
-              }}
-            >
-              Buy
-            </Button>
-          )}
+
+
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+          cursor: "pointer",
+        }}>
+          <HomeOutlined style={{ fontSize: matchesMov ? 50 :  30}} />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {matchesMov ? '' : 'Home'}
+          </Typography>
         </div>
+
+
+
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+          cursor: "pointer",
+        }}>
+          <NotificationsNoneOutlined style={{ fontSize: matchesMov ? 50 :  30 }} />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {matchesMov ? '' : 'Notifications'}
+
+          </Typography>
+        </div>
+
+
+
+        <div style={{
+          display: "flex",
+
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+          cursor: "pointer",
+        }}>
+          <ControlPointOutlined style={{ fontSize: matchesMov ? 50 :  30 }} />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {matchesMov ? '' : ' Create Post'}
+
+          </Typography>
+        </div>
+
+        {matches && <div style={{
+          display: "flex",
+
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+
+        }}>
+          <img src={`${BASE_URL}/assets/${picturePath}`} style={{ width: 28, height: 28, objectFit: "cover", borderRadius: "50%" }} alt="user" />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {firstName} {lastName}
+          </Typography>
+        </div>}
+
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+          cursor: "pointer",
+        }}
+          onClick={() => navigate(`/profile/${userId}`)}
+        >
+          <Person2Outlined style={{ fontSize: matchesMov ? 50 :  30 }} />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {matchesMov ? '' : 'Profile'}
+
+          </Typography>
+        </div>
+
+
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: matches ? '1em' : 0,
+          cursor: "pointer",
+        }}
+          onClick={() => dispatch(setLogout())}
+        >
+          <LogoutOutlined style={{ fontSize: matchesMov ? 50 :  30}} />
+          <Typography
+            variant="h6"
+            fontWeight="500"
+
+          >
+            {matchesMov ? '' : 'Logout'}
+
+          </Typography>
+        </div>
+
+
+
+
+
+
+
       </Card>
-    </Box>
+
+    </div >
+
+
   );
 }
