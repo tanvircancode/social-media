@@ -27,8 +27,9 @@ const upload = multer({ storage });
 const router = express.Router();
 
 //creating a post
-router.post('/posts', authenticateJwtUser, upload.single("picture"), async (req, res) => {
+router.post('/createpost', authenticateJwtUser, upload.single("picture"), async (req, res) => {
     const { userId, description, picturePath } = req.body;
+    console.log(req.body);
     const user = await User.findById(userId);
     if(user) {
         const newPost = new Post({
@@ -59,6 +60,16 @@ router.get("/", authenticateJwtUser, async (req, res) => {
     }
     else {
         res.status(404).json({ message: 'Cannot find post' });
+    }
+})
+
+router.get("/:userId/posts", authenticateJwtUser, async (req, res) => {
+    const post = await Post.find({userId : req.params.userId});
+    if (post) {
+        res.status(200).json(post);
+    }
+    else {
+        res.status(404).json({ message: 'Cannot find post', status: false });
     }
 })
 

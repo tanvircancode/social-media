@@ -7,6 +7,7 @@ import Login from './pages/authPage/Login.jsx';
 import Register from "./pages/authPage/Register.jsx";
 import Profile from './pages/profilePage';
 import Widget from "./components/Widget.jsx";
+import PostWidget from "./components/PostWidget.jsx";
 
 function App() {
 
@@ -23,7 +24,8 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path={"/profile/:userId"} element={authChecked ? <Profile /> : <Navigate to="/login" />} />
-
+          <Route path="/post" element={<PostWidget />} />
+          
         </Routes>
       </div>
     </>
