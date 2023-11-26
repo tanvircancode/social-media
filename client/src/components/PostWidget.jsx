@@ -1,7 +1,10 @@
-import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, CardMedia, CardActions } from "@mui/material";
-import { Favorite } from '@mui/icons-material';
+import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery } from "@mui/material";
+import { FavoriteOutlined, ChatBubbleOutlineOutlined } from '@mui/icons-material';
+import { BASE_URL } from "../config";
+import { useDispatch, useSelector } from "react-redux";
+import { setPost } from "../store";
 
-function PostWidget(
+const PostWidget = ({
     postId,
     postUserId,
     name,
@@ -9,35 +12,74 @@ function PostWidget(
     likes,
     comments,
     picturePath,
-    userPicturePath) {
+    userPicturePath }) => {
+    const matches = useMediaQuery('(min-width:900px)');
+    const matchesMov = useMediaQuery('(max-width:600px)');
+    const { _id } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+
+    const patchLike = () => {
+        axios.patch(`${BASE_URL}/posts/${_id}/like`,
+            {
+                userId: _id
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json"
+                }
+            }
+        ).then((res) => {
+            const updatedPost = res.data;
+            dispatch(setPost({post : updatedPost}));
+        })
+    }
     return (
-        <Card sx={{ maxWidth: 345 }}>
+
+        <Card style={{
+            width: '100%',
+            padding: '15px 25px',
+            minHeight: 200,
+            margin: matches ? '40px 0 0 130px' : (matchesMov ? '20px' : '60px'),
+        }}>
+
             <CardHeader
                 avatar={
-                    <Avatar aria-label="recipe" src={userPicturePath}>
-                        
-                    </Avatar>
+                    <Avatar
+                        src={`${BASE_URL}/assets/${userPicturePath}`}
+                        alt="User Avatar"
+                        aria-label="user-avatar"
+                    />
                 }
 
                 title={name}
+                titleTypographyProps={{ style: { fontSize: '16px', textAlign: 'left' } }}
+                style={{ padding: 0 }}
+
+
+
 
             />
-            <CardMedia
-                component="img"
-                height="194"
-                image="/static/images/cards/paella.jpg"
-                alt="Paella dish"
-            />
-            <CardContent>
-                <Typography variant="body2" color="text.secondary">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the mussels,
-                    if you like.
+            <CardContent style={{ padding: 0 }}>
+                <Typography variant="body2" style={{ textAlign: 'left', margin: '14px 0 10px' }}>
+                    {description}
                 </Typography>
             </CardContent>
-            <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <Favorite />
+
+            <CardMedia
+                component="img"
+                height="auto"
+                image={`${BASE_URL}/assets/${picturePath}`}
+                alt="Paella dish Alt"
+                width="100%"
+            />
+
+            <CardActions style={{ padding: 0 }}>
+                <IconButton aria-label="add to favorites" onClick={patchLike} >
+                    <FavoriteOutlined />
+                </IconButton>
+                <IconButton aria-label="add to favorites" >
+                    <ChatBubbleOutlineOutlined />
                 </IconButton>
 
                 {/* <ExpandMore

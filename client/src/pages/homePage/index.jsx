@@ -3,6 +3,7 @@ import Navbar from "../navbar";
 import { useSelector } from "react-redux";
 import Widget from "../../components/Widget";
 import NewPost from "../../components/NewPost";
+import PostsWidget from "../../components/PostsWidget";
 
 const Home = () => {
 
@@ -31,6 +32,7 @@ const Home = () => {
             }}
           >
             <NewPost picturePath={picturePath} />
+            <PostsWidget userId={_id} />
           </div>
         </Grid>
       </Grid>

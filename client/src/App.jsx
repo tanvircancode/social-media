@@ -24,7 +24,7 @@ function App() {
           <Route path={"/login"} element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path={"/profile/:userId"} element={authChecked ? <Profile /> : <Navigate to="/login" />} />
-          <Route path="/post" element={<PostWidget />} />
+          {/* <Route path="/post" element={<PostWidget />} /> */}
           
         </Routes>
       </div>

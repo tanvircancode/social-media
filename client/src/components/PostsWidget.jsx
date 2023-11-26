@@ -11,11 +11,11 @@ import PostWidget from "./PostWidget";
 function PostsWidget({ userId, isProfile = false }) {
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
-    const { posts } = useSelector((state) => state.posts);
+    const  posts  = useSelector((state) => state.posts);
 
     const getPosts = async () => {
-        await axios.get(`${BASE_URL}/posts`,
-            {},
+        
+        await axios.get(`${BASE_URL}/posts/`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -23,14 +23,16 @@ function PostsWidget({ userId, isProfile = false }) {
             }
         ).then((res) => {
             const data = res.data;
+            console.log(data)
+
             dispatch(setPosts({ posts: data }));
         })
             .catch((error) => alert(error.response.data.message));
     }
 
     const getUserPosts = async () => {
+
         await axios.get(`${BASE_URL}/posts/${userId}/posts`,
-            {},
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -38,12 +40,14 @@ function PostsWidget({ userId, isProfile = false }) {
             }
         ).then((res) => {
             const data = res.data;
+            console.log(data)
             dispatch(setPosts({ posts: data }));
         })
             .catch((error) => alert(error.response.data.message));
     }
 
     useEffect(() => {
+        
         if (isProfile) {
             getUserPosts();
         } else {

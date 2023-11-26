@@ -70,7 +70,7 @@ function NewPost({ picturePath }) {
             style={{
                 width: '100%',
                 padding: '15px 25px',
-                minHeight: 200,
+                minHeight: 130,
                 margin: matches ? '40px 0 0 130px' : (matchesMov ? '20px' : '60px'),
             }}>
                 
