@@ -6,15 +6,13 @@ import { setPosts } from "../store";
 import { useEffect } from "react";
 import PostWidget from "./PostWidget";
 
-
-
 function PostsWidget({ userId, isProfile = false }) {
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
-    const  posts  = useSelector((state) => state.posts);
+    const posts = useSelector((state) => state.posts);
 
     const getPosts = async () => {
-        
+
         await axios.get(`${BASE_URL}/posts/`,
             {
                 headers: {
@@ -47,7 +45,7 @@ function PostsWidget({ userId, isProfile = false }) {
     }
 
     useEffect(() => {
-        
+
         if (isProfile) {
             getUserPosts();
         } else {

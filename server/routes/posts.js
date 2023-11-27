@@ -29,7 +29,7 @@ const router = express.Router();
 //creating a post
 router.post('/createpost', authenticateJwtUser, upload.single("picture"), async (req, res) => {
     const { userId, description, picturePath } = req.body;
-    console.log(req.body);
+    
     const user = await User.findById(userId);
     if(user) {
         const newPost = new Post({
@@ -76,14 +76,21 @@ router.get("/:userId/posts", authenticateJwtUser, async (req, res) => {
 router.patch("/:id/like", authenticateJwtUser, async (req, res) => {
     const { id } = req.params;
     const { userId } = req.body;
+    const stringUserId = userId.toString();
     const post = await Post.findById(id);
     const liked = post.likes.get(userId);
+    console.log('Liked:', liked);
+    console.log('USer ID:', userId);
+
+    console.log('Before Update:', post.likes);
 
     if (liked) {
+        console.log('disliked')
         post.likes.delete(userId)
     } else {
-        post.likes.set(userId, true)
-    }
+        console.log('liked')
+        post.likes.set(stringUserId, true)
+    }console.log('After Update:', post.likes);
 
     const updatedPost = await Post.findByIdAndUpdate(
         id,
@@ -93,7 +100,7 @@ router.patch("/:id/like", authenticateJwtUser, async (req, res) => {
     if (updatedPost) {
         res.status(201).json(updatedPost);
     } else {
-        res.status(405).json({ message: "Like Not updated" });
+        res.status(405).json({ message: "Likes Not updated" });
     }
 
 

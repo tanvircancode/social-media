@@ -2,7 +2,18 @@ import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, CardMedi
 import { FavoriteOutlined, ChatBubbleOutlineOutlined } from '@mui/icons-material';
 import { BASE_URL } from "../config";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { setPost } from "../store";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#ff5722', // Replace with your desired primary color
+        },
+    },
+});
+
 
 const PostWidget = ({
     postId,
@@ -13,27 +24,27 @@ const PostWidget = ({
     comments,
     picturePath,
     userPicturePath }) => {
+    const dispatch = useDispatch();
     const matches = useMediaQuery('(min-width:900px)');
     const matchesMov = useMediaQuery('(max-width:600px)');
-    const { _id } = useSelector((state) => state.user);
-    const dispatch = useDispatch();
+    const loggedInUserId = useSelector((state) => state.user);
+    const token = useSelector((state) => state.token);
+    const isliked = Boolean(likes[loggedInUserId]);
+    const likedCount = Object.keys(likes).length;
 
-    const patchLike = () => {
-        axios.patch(`${BASE_URL}/posts/${_id}/like`,
-            {
-                userId: _id
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json"
-                }
-            }
-        ).then((res) => {
-            const updatedPost = res.data;
-            dispatch(setPost({post : updatedPost}));
-        })
-    }
+
+    
+    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId }),
+      });
+      const updatedPost = await response.json();
+      dispatch(setPost({ post: updatedPost }));
+    };
     return (
 
         <Card style={{
@@ -75,8 +86,12 @@ const PostWidget = ({
             />
 
             <CardActions style={{ padding: 0 }}>
+
                 <IconButton aria-label="add to favorites" onClick={patchLike} >
-                    <FavoriteOutlined />
+                    <ThemeProvider theme={theme}>
+                        <FavoriteOutlined color={isliked ? 'primary' : 'default'} />
+                        {likedCount}
+                    </ThemeProvider>
                 </IconButton>
                 <IconButton aria-label="add to favorites" >
                     <ChatBubbleOutlineOutlined />
