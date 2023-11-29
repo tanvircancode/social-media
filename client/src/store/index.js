@@ -29,6 +29,13 @@ export const authSlice = createSlice({
             });
             state.posts = updatedPosts;
         },
+        setComment: (state, action) => {
+            const updatedComments = state.posts.map((post) => {
+                if (post._id === action.payload.post._id) return action.payload.post
+                return post;
+            });
+            state.posts = updatedComments;
+        },
     },
 });
 

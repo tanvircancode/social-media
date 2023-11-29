@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import { Card, Divider, TextField, useMediaQuery, Button, Typography } from "@mui/material";
 import { BASE_URL } from "../config";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useDispatch } from 'react-redux';
 import axios from "axios";
@@ -57,11 +57,13 @@ function NewPost({ picturePath }) {
             dispatch(setPosts({ posts }));
             setIsImage(!isImage);
             setImage(null);
-            
             setPost("");
-            console.log(post)
+            
         }).catch((error) => alert(error.response.data.message));
     }
+
+   
+   
 
 
     return (
@@ -77,7 +79,7 @@ function NewPost({ picturePath }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
                 <img src={`${BASE_URL}/assets/${picturePath}`} style={{ width: 60, height: 50, objectFit: "cover", borderRadius: "50%" }} alt="user" />
                 <TextField id="outlined-basic" label="Write Something.." variant="outlined"
-                    style={{ padding: '0.5em', borderRadius: '0.75rem', width: '100%' }} onChange={(e) => setPost(e.target.value)}/>
+                    style={{ padding: '0.5em', borderRadius: '0.75rem', width: '100%' }} value={post} onChange={(e) => setPost(e.target.value)}/>
             </div>
 
             {isImage &&
@@ -88,11 +90,6 @@ function NewPost({ picturePath }) {
                     ) : <p>{image.name}</p>}
                 </div>
             }
-
-
-
-
-            {/* {image && <p>{image.name}</p>} */}
 
 
 

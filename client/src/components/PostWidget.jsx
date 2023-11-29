@@ -1,8 +1,9 @@
-import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery } from "@mui/material";
-import { FavoriteOutlined, ChatBubbleOutlineOutlined } from '@mui/icons-material';
+import { Card, CardHeader, Avatar, Box, Grid, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery, Divider } from "@mui/material";
+import { FavoriteOutlined, SendOutlined, ChatBubbleOutlineOutlined } from '@mui/icons-material';
 import { BASE_URL } from "../config";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useState } from "react";
 import { setPost } from "../store";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -27,24 +28,69 @@ const PostWidget = ({
     const dispatch = useDispatch();
     const matches = useMediaQuery('(min-width:900px)');
     const matchesMov = useMediaQuery('(max-width:600px)');
-    const loggedInUserId = useSelector((state) => state.user);
+    const loggedInUserId = useSelector((state) => state.user._id);
+    const loggedInUserPicture = useSelector((state) => state.user.picturePath);
+    const commentedUserfName = useSelector((state) => state.user.firstName);
+    const commentedUserlName = useSelector((state) => state.user.lastName);
     const token = useSelector((state) => state.token);
     const isliked = Boolean(likes[loggedInUserId]);
     const likedCount = Object.keys(likes).length;
+    const [isComments, setIsComments] = useState(false);
+    const [comment, setComment] = useState("");
+
+    const commentedUserName = commentedUserfName + " " + commentedUserlName;
+
+    const handleComment = async () => {
+
+        console.log(loggedInUserId)
+        await axios.patch(`${BASE_URL}/posts/${postId}/comment`,
+            {
+                userId: loggedInUserId,
+                name: commentedUserName,
+                userPicturePath: loggedInUserPicture,
+                description: comment
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json"
+                }
+            }
+        ).then((res) => {
+            console.log(res.data);
+
+            const updatedPost = res.data;
+            dispatch(setPost({ post: updatedPost }));
+            console.log(comments);
+
+            setComment("")
+        }).catch((error) => {
+            console.log(error);
+            alert(error.response);
+        });
+    }
 
 
-    
-    const response = await fetch(`http://localhost:3001/posts/${postId}/like`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: loggedInUserId }),
-      });
-      const updatedPost = await response.json();
-      dispatch(setPost({ post: updatedPost }));
-    };
+    const patchLike = async () => {
+        await axios.patch(`${BASE_URL}/posts/${postId}/like`,
+            {
+                userId: loggedInUserId
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json"
+                }
+            }
+        ).then((res) => {
+            console.log(res.data);
+            const updatedPost = res.data;
+            dispatch(setPost({ post: updatedPost }));
+        }).catch((error) => {
+            console.log(error);
+            alert(error.response);
+        });
+    }
     return (
 
         <Card style={{
@@ -85,56 +131,43 @@ const PostWidget = ({
                 width="100%"
             />
 
-            <CardActions style={{ padding: 0 }}>
+            <CardActions style={{ padding: 0, display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: '20px', }}>
+                    <IconButton aria-label="add to favorites" onClick={patchLike} >
+                        <ThemeProvider theme={theme}>
+                            <FavoriteOutlined color={isliked ? 'primary' : 'default'} />
+                        </ThemeProvider>
+                    </IconButton>
+                    <Typography style={{ marginTop: '2px' }}>{likedCount}</Typography>
+                    <IconButton aria-label="add to favorites" onClick={() => setIsComments(!isComments)}>
+                        <ChatBubbleOutlineOutlined />
+                    </IconButton>
+                    <Typography style={{ margin: 0 }}>{comments.length}</Typography>
+                </div>
 
-                <IconButton aria-label="add to favorites" onClick={patchLike} >
-                    <ThemeProvider theme={theme}>
-                        <FavoriteOutlined color={isliked ? 'primary' : 'default'} />
-                        {likedCount}
-                    </ThemeProvider>
-                </IconButton>
-                <IconButton aria-label="add to favorites" >
-                    <ChatBubbleOutlineOutlined />
-                </IconButton>
+                <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center' }}>
+                    <input type="text" value={comment} placeholder="Write your comment" style={{ padding: '10px', borderRadius: '0.75rem', width: '250px' }} onChange={(e) => setComment(e.target.value)} />
+                    <SendOutlined style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={handleComment} />
+                </div>
 
-                {/* <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
-                    <ExpandMoreIcon />
-                </ExpandMore> */}
             </CardActions>
-            {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <Typography paragraph>Method:</Typography>
-                    <Typography paragraph>
-                        Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-                        aside for 10 minutes.
-                    </Typography>
-                    <Typography paragraph>
-                        Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-                        medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-                        occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-                        large plate and set aside, leaving chicken and chorizo in the pan. Add
-                        pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-                        stirring often until thickened and fragrant, about 10 minutes. Add
-                        saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-                    </Typography>
-                    <Typography paragraph>
-                        Add rice and stir very gently to distribute. Top with artichokes and
-                        peppers, and cook without stirring, until most of the liquid is absorbed,
-                        15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-                        mussels, tucking them down into the rice, and cook again without
-                        stirring, until mussels have opened and rice is just tender, 5 to 7
-                        minutes more. (Discard any mussels that don&apos;t open.)
-                    </Typography>
-                    <Typography>
-                        Set aside off of the heat to let rest for 10 minutes, and then serve.
-                    </Typography>
-                </CardContent>
-            </Collapse> */}
+            {isComments && (
+                <Card style={{ marginTop: "1rem", padding:"1rem 0.75rem 1rem", border:'none'}}>
+                    {comments.map((comment, i) => (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 20,marginTop: 10 }}>
+                            <img src={`${BASE_URL}/assets/${comment.userPicturePath}`} style={{ width: 30, height: 30, borderRadius: '0.75rem' }} />
+                            <Typography>
+                                {comment.description}
+                            </Typography>
+
+                        </div>
+                    ))}
+                    
+                </Card>
+            )}
+
+
+
         </Card>
     );
 }

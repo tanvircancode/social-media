@@ -1,6 +1,7 @@
 
 const mongoose = require("mongoose");
 
+
 //defining mongoose scehmas
 const postSchema = new mongoose.Schema({
     userId: { type: String },
@@ -14,7 +15,12 @@ const postSchema = new mongoose.Schema({
         of: Boolean,
     },
     comments: {
-        type: Array,
+        type: [{
+            userId: String,
+            name: String,
+            userPicturePath: String,
+            description: String
+        }],
         default: [],
     }
 });
