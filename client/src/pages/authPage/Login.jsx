@@ -73,13 +73,13 @@ const Login = () => {
                 /* and other goodies */
             }) => (
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <div style={{height:'100vh'}}>
                         <div
                             style={{
                                 display: "flex",
                                 justifyContent: "center",
                                 marginBottom: 15,
-                                paddingTop: 150,
+                                paddingTop: 250,
                             }}
                         >
                             <Typography variant="h6">Welcome back. Sign In below</Typography>
@@ -96,7 +96,7 @@ const Login = () => {
                                 style={{
                                     width: 400,
                                     padding: 20,
-                                    height: 230,
+                                    maxHeight: 230,
                                 }}
                             >
                                 <TextField

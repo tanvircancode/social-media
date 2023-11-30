@@ -1,4 +1,4 @@
-import {  Typography, AppBar, Box, Toolbar } from "@mui/material";
+import { Typography, AppBar, Box, Toolbar, Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,9 +18,24 @@ function Navbar() {
                         Social Media
                     </Typography>
 
+                    <div style={{marginRight:20}}>
+                        <Button color="inherit" style={{cursor:"pointer"}}
+                            onClick={() => {
+                                navigate('/login')
+                            }} >Login</Button>
+
+                        <Button color="inherit"  style={{cursor:"pointer"}}
+                        onClick={() => {
+                            navigate('/register')
+                        }}>Register</Button>
+
+                    </div>
+
+
+
                 </Toolbar>
-            </AppBar>
-        </Box>
+            </AppBar >
+        </Box >
     );
 }
 export default Navbar;

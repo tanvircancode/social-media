@@ -86,7 +86,7 @@ const Register = () => {
                 /* and other goodies */
             }) => (
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <div style={{height:'100vh'}}>
                         <div
                             style={{
                                 display: "flex",
@@ -130,7 +130,7 @@ const Register = () => {
                                             {!values.picture ? (
                                                 <p style={{ textAlign: 'center' }}>Add Picture</p>
                                             ) : (
-                                                <Box style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <Box style={{ textAlign:'center', padding:10 }}>
                                                     <Typography>{values.picture.name}</Typography>
 
                                                 </Box >

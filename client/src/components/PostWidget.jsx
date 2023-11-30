@@ -1,11 +1,13 @@
 import { Card, CardHeader, Avatar, Box, Grid, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery, Divider } from "@mui/material";
-import { FavoriteOutlined, SendOutlined, ChatBubbleOutlineOutlined } from '@mui/icons-material';
+import { FavoriteOutlined, SendOutlined, ChatBubbleOutlineOutlined, DeleteOutlined } from '@mui/icons-material';
 import { BASE_URL } from "../config";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useState } from "react";
 import { setPost } from "../store";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { toast, ToastContainer } from "react-toastify";
+
 
 const theme = createTheme({
     palette: {
@@ -39,6 +41,55 @@ const PostWidget = ({
     const [comment, setComment] = useState("");
 
     const commentedUserName = commentedUserfName + " " + commentedUserlName;
+
+    const handleDelete = async () => {
+
+        await axios.patch(`${BASE_URL}/posts/${postId}/deletepost`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }
+        ).then((res) => {
+            console.log(res.data);
+
+            // const updatedPost = res.data;
+            // dispatch(setPost({ post: updatedPost }));
+            // console.log(comments);
+
+            
+        }).catch((error) => {
+            console.log(error);
+            alert(error.response);
+        });
+
+        // try {
+        //   await deleteItem(itemId);
+        //   onDelete(); // Callback to update the UI or state after deletion
+        //   toast.success('Item deleted successfully');
+        // } catch (error) {
+        //   console.error('Error deleting item:', error);
+        //   toast.error('Error deleting item');
+        // }
+      };
+
+    const showToast = () => {
+        console.log(postId)
+        toast.warning(
+            <div>
+                <p>Are you sure you want to delete this item?</p>
+                <button onClick={handleDelete} style={{padding:5}}>Yes</button>
+                <button style={{marginLeft:'20px',padding:5}} onClick={() => toast.dismiss()}>No</button>
+            </div>,
+            {
+                autoClose: false,
+                position: 'top-center',
+                closeButton:false
+            }
+        );
+    };
+
 
     const handleComment = async () => {
 
@@ -99,24 +150,26 @@ const PostWidget = ({
             minHeight: 200,
             margin: matches ? '40px 0 0 130px' : (matchesMov ? '20px' : '60px'),
         }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <CardHeader
+                    avatar={
+                        <Avatar
+                            src={`${BASE_URL}/assets/${userPicturePath}`}
+                            alt="User Avatar"
+                            aria-label="user-avatar"
+                        />
+                    }
 
-            <CardHeader
-                avatar={
-                    <Avatar
-                        src={`${BASE_URL}/assets/${userPicturePath}`}
-                        alt="User Avatar"
-                        aria-label="user-avatar"
-                    />
-                }
+                    title={name}
+                    titleTypographyProps={{ style: { fontSize: '16px', textAlign: 'left' } }}
+                    style={{ padding: 0 }}
 
-                title={name}
-                titleTypographyProps={{ style: { fontSize: '16px', textAlign: 'left' } }}
-                style={{ padding: 0 }}
+                />
+                {postUserId === loggedInUserId && <DeleteOutlined style={{cursor:'pointer'}} onClick={showToast} />}
 
 
-
-
-            />
+            </div>
+            <ToastContainer />
             <CardContent style={{ padding: 0 }}>
                 <Typography variant="body2" style={{ textAlign: 'left', margin: '14px 0 10px' }}>
                     {description}
@@ -152,17 +205,25 @@ const PostWidget = ({
 
             </CardActions>
             {isComments && (
-                <Card style={{ marginTop: "1rem", padding:"1rem 0.75rem 1rem", border:'none'}}>
+                <Card style={{ marginTop: "1rem", padding: "1rem 0.75rem 1rem", boxShadow: 'none' }}>
                     {comments.map((comment, i) => (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 20,marginTop: 10 }}>
-                            <img src={`${BASE_URL}/assets/${comment.userPicturePath}`} style={{ width: 30, height: 30, borderRadius: '0.75rem' }} />
-                            <Typography>
-                                {comment.description}
-                            </Typography>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 40, marginTop: 10 }}>
+                            <img src={`${BASE_URL}/assets/${comment.userPicturePath}`} style={{ width: 50, height: 50, borderRadius: '2rem', objectFit: 'cover' }} />
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Typography style={{ fontWeight: 'bold' }}>
+                                    {comment.name}
+                                </Typography>
+
+                                <Typography>
+                                    {comment.description}
+                                </Typography>
+                                <Divider />
+                            </div>
 
                         </div>
+
                     ))}
-                    
+
                 </Card>
             )}
 
