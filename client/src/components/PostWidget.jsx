@@ -1,10 +1,10 @@
-import { Card, CardHeader, Avatar, Box, Grid, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery, Divider } from "@mui/material";
-import { FavoriteOutlined, SendOutlined, ChatBubbleOutlineOutlined, DeleteOutlined } from '@mui/icons-material';
+import { Card, CardHeader, Avatar, Box, Grid, IconButton, Typography, CardContent, CardMedia, CardActions, useMediaQuery, Divider, TextField } from "@mui/material";
+import { FavoriteOutlined, SendOutlined, ChatBubbleOutlineOutlined, DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { BASE_URL } from "../config";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useState } from "react";
-import { setPost } from "../store";
+import { setPost, setPosts } from "../store";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { toast, ToastContainer } from "react-toastify";
 
@@ -38,54 +38,44 @@ const PostWidget = ({
     const isliked = Boolean(likes[loggedInUserId]);
     const likedCount = Object.keys(likes).length;
     const [isComments, setIsComments] = useState(false);
+    const [editComment, setEditComment] = useState(false);
     const [comment, setComment] = useState("");
 
     const commentedUserName = commentedUserfName + " " + commentedUserlName;
-
+    console.log(comments)
     const handleDelete = async () => {
 
-        await axios.patch(`${BASE_URL}/posts/${postId}/deletepost`,
-            {},
+        await axios.delete(`${BASE_URL}/posts/${postId}/deletepost`,
+
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             }
         ).then((res) => {
-            console.log(res.data);
+            // console.log(res.data);
+            const posts = res.data.posts
+            dispatch(setPosts({ posts }));
+            toast.dismiss();
 
-            // const updatedPost = res.data;
-            // dispatch(setPost({ post: updatedPost }));
-            // console.log(comments);
-
-            
         }).catch((error) => {
             console.log(error);
-            alert(error.response);
+            alert(error);
         });
-
-        // try {
-        //   await deleteItem(itemId);
-        //   onDelete(); // Callback to update the UI or state after deletion
-        //   toast.success('Item deleted successfully');
-        // } catch (error) {
-        //   console.error('Error deleting item:', error);
-        //   toast.error('Error deleting item');
-        // }
-      };
+    };
 
     const showToast = () => {
-        console.log(postId)
+
         toast.warning(
             <div>
                 <p>Are you sure you want to delete this item?</p>
-                <button onClick={handleDelete} style={{padding:5}}>Yes</button>
-                <button style={{marginLeft:'20px',padding:5}} onClick={() => toast.dismiss()}>No</button>
+                <button onClick={handleDelete} style={{ padding: 5 }}>Yes</button>
+                <button style={{ marginLeft: '20px', padding: 5 }} onClick={() => toast.dismiss()}>No</button>
             </div>,
             {
                 autoClose: false,
                 position: 'top-center',
-                closeButton:false
+                closeButton: false
             }
         );
     };
@@ -165,7 +155,7 @@ const PostWidget = ({
                     style={{ padding: 0 }}
 
                 />
-                {postUserId === loggedInUserId && <DeleteOutlined style={{cursor:'pointer'}} onClick={showToast} />}
+                {postUserId === loggedInUserId && <DeleteOutlined style={{ cursor: 'pointer' }} onClick={showToast} />}
 
 
             </div>
@@ -213,11 +203,19 @@ const PostWidget = ({
                                 <Typography style={{ fontWeight: 'bold' }}>
                                     {comment.name}
                                 </Typography>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    {!editComment &&
+                                     <Typography>
+                                        {comment.description}
+                                    </Typography>
+                                    }
+                                    {editComment && <TextField value={comment.description} />}
 
-                                <Typography>
-                                    {comment.description}
-                                </Typography>
-                                <Divider />
+
+                                    <div>
+                                        {comment.userId === loggedInUserId && <EditOutlined style={{ cursor: 'pointer' }} onClick={() => setEditComment(!editComment)} />}
+                                    </div>
+                                </div>
                             </div>
 
                         </div>

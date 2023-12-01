@@ -130,29 +130,26 @@ router.patch("/:id/comment", authenticateJwtUser, async (req, res) => {
     } else {
         res.status(405).json({ message: "Likes Not updated" });
     }
-
-
 })
 
 router.delete("/:id/deletepost", authenticateJwtUser, async (req, res) => {
     const { id } = req.params;
     
     const post = await Post.findById(id);
-
+    
     if(!post) {
         return res.status(404).json({message:'post not found', status: false})
     }
     
-    const posts = await Post.find();
-    const index = posts.findIndex((post) => post._id === id)
+    const result = await Post.deleteOne({_id : id});
     
-    if(index !== -1) {
-        posts.splice(index,1)
-        return res.status(201).json({message:'post deleted successfully', status: true})
+    if(result.acknowledged && result.deletedCount === 1) {
+        const posts = await Post.find();
+        return res.status(201).json({message:'post deleted successfully', status: true,posts})
     }
 
      else {
-        res.status(405).json({ message: "Post Not found" , status: false});
+        res.status(405).json({ message: "Error deleting post" , status: false});
     }
 
 
