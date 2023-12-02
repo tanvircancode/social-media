@@ -21,7 +21,7 @@ function PostsWidget({ userId, isProfile = false }) {
             }
         ).then((res) => {
             const data = res.data;
-            console.log(data)
+            // console.log(data)
 
             dispatch(setPosts({ posts: data }));
         })
