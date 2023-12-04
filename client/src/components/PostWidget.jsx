@@ -10,8 +10,6 @@ import {
   CardMedia,
   CardActions,
   useMediaQuery,
-  Divider,
-  TextField,
 } from "@mui/material";
 import {
   FavoriteOutlined,
@@ -57,54 +55,11 @@ const PostWidget = ({
   const isliked = Boolean(likes[loggedInUserId]);
   const likedCount = Object.keys(likes).length;
   const [isComments, setIsComments] = useState(false);
-  const [editComments, setEditComments] = useState({});
-  const [commentValues, setCommentValues] = useState({});
   const [comment, setComment] = useState("");
-  const [editingCommentId, setEditingCommentId] = useState(null);
 
   const commentedUserName = commentedUserfName + " " + commentedUserlName;
   console.log(comments);
 
-  useEffect(() => {
-    const initialEditComments = comments.reduce((acc, comment) => {
-      acc[comment._id] = false;
-      return acc;
-    }, {});
-
-    setEditComments(initialEditComments);
-  }, [comments]);
-
-  const toggleEditComment = (id) => {
-    setEditComments((prevEditComments) => ({
-      ...prevEditComments,
-      [id]: !prevEditComments[id],
-    }));
-
-    setCommentValues((prevCommentValues) => ({
-      ...prevCommentValues,
-      [id]: comments.find((comment) => comment._id === id)?.description || "",
-    }));
-
-    setEditingCommentId((prevEditingCommentId) => {
-      prevEditingCommentId === id ? null : id;
-    })
-  };
-
-  const handleCommentChange = (id, newValue) => {
-    // alert(value)
-    setCommentEdit(true);
-    setCommentValues((prevCommentValues) => ({
-      ...prevCommentValues,
-      [id]: newValue,
-    }));
-  };
-
-  const handleEditClick = (id) => {
-    console.log(id);
-    console.log(commentArr[id]);
-    commentArr[id] = true;
-    console.log(commentArr[id]);
-  };
   const handleDelete = async () => {
     await axios
       .delete(
@@ -270,19 +225,20 @@ const PostWidget = ({
             marginTop: "20px",
           }}
         >
-          <IconButton aria-label="add to favorites" onClick={patchLike}>
+          <IconButton aria-label="add to favorites" onClick={patchLike} style={{padding:0}} >
             <ThemeProvider theme={theme}>
               <FavoriteOutlined color={isliked ? "primary" : "default"} />
             </ThemeProvider>
           </IconButton>
           <Typography style={{ marginTop: "2px" }}>{likedCount}</Typography>
           <IconButton
+          style={{padding:0, marginLeft:10}}
             aria-label="add to favorites"
             onClick={() => setIsComments(!isComments)}
           >
             <ChatBubbleOutlineOutlined />
           </IconButton>
-          <Typography style={{ margin: 0 }}>{comments.length}</Typography>
+          <Typography style={{ marginRight: 5 }}>{comments.length}</Typography>
         </div>
 
         <div
@@ -293,6 +249,7 @@ const PostWidget = ({
             value={comment}
             placeholder="Write your comment"
             style={{ padding: "10px", borderRadius: "0.75rem", width: "250px" }}
+            
             onChange={(e) => setComment(e.target.value)}
           />
           <SendOutlined
@@ -302,7 +259,14 @@ const PostWidget = ({
           />
         </div>
       </CardActions>
-      {isComments && (
+
+      {(isComments && comments.length == 0) && (
+        <div style={{textAlign:'left',marginTop:10}}>
+          No comments
+        </div>
+      )}
+
+      {(isComments && comments.length > 0) && (
         <Card
           style={{
             marginTop: "1rem",
@@ -339,36 +303,7 @@ const PostWidget = ({
                   {comment.name}
                 </Typography>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  {!editComments[comment._id] && (
-                    <Typography>{comment.description}</Typography>
-                  )}
-                  {editComments[comment._id] && (
-                    <TextField
-                      value={commentValues[comment._id]}
-                      id="outlined-flexible"
-                      variant="outlined"
-                      onChange={(e) =>
-                        handleCommentChange(comment._id, e.target.value)
-                      }
-                    />
-                  )}
-
-                  <div>
-                    {(comment.userId === loggedInUserId && !editComments[comment._id]) && (
-                      <EditOutlined
-                        fontSize="inherit"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => toggleEditComment(comment._id)}
-                      />
-                    )}
-
-                    {editComments[comment._id] && (
-                      <SendOutlined
-                        style={{ cursor: "pointer" }}
-                        
-                      />
-                    )}
-                  </div>
+                  <Typography>{comment.description}</Typography>
                 </div>
               </div>
             </div>

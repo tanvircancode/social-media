@@ -38,6 +38,7 @@ function NewPost({ picturePath }) {
         const formData = new FormData();
         formData.append("userId", _id);
         formData.append("description", post);
+        
         if (image) {
             formData.append("picture", image);
             formData.append("picturePath", image.name);
@@ -98,7 +99,7 @@ function NewPost({ picturePath }) {
                     <ImageOutlined style={{ marginLeft: '3.4em' }} />
                     <Typography variant="h8" fontWeight="500">Image</Typography>
                 </div>
-                <Button variant="contained" style={{ marginRight: '0.5em' }} onClick={handlePost}>Post</Button>
+                <Button variant="contained" style={{ marginRight: '0.5em',padding:5 }} onClick={handlePost}>Post</Button>
             </div>
         </Card>
 

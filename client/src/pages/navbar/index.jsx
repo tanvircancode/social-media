@@ -3,39 +3,60 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-
-
 function Navbar() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const token = useSelector((state) => state.token);
+  console.log(token)
 
 
-    return (
-        <Box>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Social Media
-                    </Typography>
+  let loggedUserName = "";
 
-                    <div style={{marginRight:20}}>
-                        <Button color="inherit" style={{cursor:"pointer"}}
-                            onClick={() => {
-                                navigate('/login')
-                            }} >Login</Button>
+  if (token != null) {
+    const localStorageData = localStorage.getItem("persist:root");
+    const parsedStorageData = JSON.parse(localStorageData);
+    const parsedUserData = JSON.parse(parsedStorageData.user) ?? "";
+     loggedUserName = parsedUserData.firstName + " " + parsedUserData.lastName;
+  }
 
-                        <Button color="inherit"  style={{cursor:"pointer"}}
-                        onClick={() => {
-                            navigate('/register')
-                        }}>Register</Button>
+  return (
+    <Box>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Social Media
+          </Typography>
 
-                    </div>
+          {token != null ? (
+            <div style={{ marginRight: 20 }}>
+              <Typography variant="h6">Hi, {loggedUserName}</Typography>
+            </div>
+          ) : (
+            <div style={{ marginRight: 20 }}>
+              <Button
+                color="inherit"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
+              </Button>
 
-
-
-                </Toolbar>
-            </AppBar >
-        </Box >
-    );
+              <Button
+                color="inherit"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                Register
+              </Button>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
 }
 export default Navbar;

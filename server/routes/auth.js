@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
+const authenticateJwtUser = require('../middleware/auth.js')
+
 
 const  {User}  = require('../db/User.js');
 
@@ -23,6 +25,20 @@ const upload = multer({ storage });
 // end
 
 const router = express.Router();
+
+//new
+router.get("/me", authenticateJwtUser,  async(req, res) => {
+    const email = req.user.email;
+    const user = await User.findOne({email});
+    if(user) {
+        return res.json({
+            user:user
+          })
+    }else {
+        res.status(403).json({message: 'Admin does not exist'});
+    }
+   
+  });
 
 router.post("/register", upload.single("picture"), async (req, res) => {
 
