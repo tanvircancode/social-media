@@ -2,6 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+const mongoose = require("mongoose");
 const path = require('path');
 const authenticateJwtUser = require('../middleware/auth.js')
 
@@ -28,11 +29,13 @@ const router = express.Router();
 
 //new
 router.get("/me", authenticateJwtUser,  async(req, res) => {
+
     const email = req.user.email;
     const user = await User.findOne({email});
+
     if(user) {
         return res.json({
-            user:user
+            user
           })
     }else {
         res.status(403).json({message: 'Admin does not exist'});
@@ -78,7 +81,7 @@ router.post("/login", async (req, res) => {
         if (!result) {
             return res.status(400).json({ message: "Invalid credentials.", status : false });
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" })
+        const token = jwt.sign({ id: user._id , email:user.email}, process.env.JWT_SECRET, { expiresIn: "1h" })
         delete user.password;
         res.status(200).json({ token, user , status : true });
     } else {

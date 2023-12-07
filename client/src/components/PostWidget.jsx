@@ -58,7 +58,7 @@ const PostWidget = ({
   const [comment, setComment] = useState("");
 
   const commentedUserName = commentedUserfName + " " + commentedUserlName;
-  console.log(comments);
+ 
 
   const handleDelete = async () => {
     await axios
@@ -124,16 +124,15 @@ const PostWidget = ({
         }
       )
       .then((res) => {
-        console.log(res.data);
 
         const updatedPost = res.data;
         dispatch(setPost({ post: updatedPost }));
-        console.log(comments);
+       
 
         setComment("");
       })
       .catch((error) => {
-        console.log(error);
+        
         alert(error.response);
       });
   };
@@ -153,12 +152,12 @@ const PostWidget = ({
         }
       )
       .then((res) => {
-        console.log(res.data);
+        
         const updatedPost = res.data;
         dispatch(setPost({ post: updatedPost }));
       })
       .catch((error) => {
-        console.log(error);
+       
         alert(error.response);
       });
   };

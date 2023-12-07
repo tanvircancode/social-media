@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
         if (err) {
           return res.status(500).json({ error: err.message });
         }
+        
   
         req.user = user;
         next();
@@ -20,4 +21,4 @@ const jwt = require("jsonwebtoken");
     }
 }
 
-module.exports = authenticateJwtUser
+module.exports = authenticateJwtUser;
