@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "../config";
 import {
   HomeOutlined,
-  NotificationsNoneOutlined,
   LogoutOutlined,
   Person2Outlined,
   ControlPointOutlined,
@@ -19,7 +18,6 @@ export default function Widget({ userId, picturePath }) {
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
   const newpost = useSelector((state) => state.newpost);
-  console.log(newpost)
 
   const matches = useMediaQuery("(min-width:900px)");
   const matchesMov = useMediaQuery("(max-width:640px)");
@@ -57,23 +55,28 @@ export default function Widget({ userId, picturePath }) {
       headers: { Authorization: `Bearer ${token}` },
     }).then(callback1);
 
-    function callback1(res) {
+    function callback1(res) {   
       res.json().then(callback2);
     }
 
-    function callback2(data) {
+    function callback2(data) { 
       console.log(data);
       setUser(data);
     }
   };
 
+
   const handleCreatePost = () => {
+    
     dispatch(
       setNewPost({
-        postdiv: !newpost,
+        newpost: !newpost,
       })
     );
+    
   };
+
+  
 
   useEffect(() => {
     fetchUser();
@@ -95,6 +98,7 @@ export default function Widget({ userId, picturePath }) {
             gap: matches ? "1em" : 0,
             cursor: "pointer",
           }}
+          onClick={() => navigate("/")}
         >
           <HomeOutlined style={{ fontSize: matchesMov ? 50 : 30 }} />
           <Typography variant="h6" fontWeight="500">
@@ -102,22 +106,7 @@ export default function Widget({ userId, picturePath }) {
           </Typography>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: matches ? "1em" : 0,
-            cursor: "pointer",
-          }}
-        >
-          <NotificationsNoneOutlined
-            style={{ fontSize: matchesMov ? 50 : 30 }}
-          />
-          <Typography variant="h6" fontWeight="500">
-            {matchesMov ? "" : "Notifications"}
-          </Typography>
-        </div>
-
+      
         <div
           style={{
             display: "flex",
@@ -168,6 +157,7 @@ export default function Widget({ userId, picturePath }) {
             cursor: "pointer",
           }}
           onClick={() => navigate(`/profile/${userId}`)}
+          
         >
           <Person2Outlined style={{ fontSize: matchesMov ? 50 : 30 }} />
           <Typography variant="h6" fontWeight="500">

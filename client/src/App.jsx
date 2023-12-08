@@ -13,8 +13,9 @@ import { setLogin } from "./store/index.js";
 import { useEffect } from "react";
 
 function App() {
+  
   const authChecked = Boolean(useSelector((state) => state.token));
-
+  
   return (
     <>
       <div style={{ backgroundColor: "#eeeeee" }}>
@@ -22,7 +23,7 @@ function App() {
         <InitUser />
         <Routes>
           <Route
-            path={"/home"}
+            path={"/"}
             element={authChecked ? <Home /> : <Navigate to="/login" />}
           />
           <Route path={"/login"} element={<Login />} />

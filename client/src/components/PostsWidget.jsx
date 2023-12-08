@@ -28,7 +28,7 @@ function PostsWidget({ userId, isProfile = false }) {
             .catch((error) => alert(error.response.data.message));
     }
 
-    const getUserPosts = async () => {s
+    const getUserPosts = async () => {
 
         await axios.get(`${BASE_URL}/posts/${userId}/posts`,
             {

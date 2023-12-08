@@ -58,7 +58,6 @@ const PostWidget = ({
   const [comment, setComment] = useState("");
 
   const commentedUserName = commentedUserfName + " " + commentedUserlName;
- 
 
   const handleDelete = async () => {
     await axios
@@ -124,15 +123,12 @@ const PostWidget = ({
         }
       )
       .then((res) => {
-
         const updatedPost = res.data;
         dispatch(setPost({ post: updatedPost }));
-       
 
         setComment("");
       })
       .catch((error) => {
-        
         alert(error.response);
       });
   };
@@ -152,12 +148,10 @@ const PostWidget = ({
         }
       )
       .then((res) => {
-        
         const updatedPost = res.data;
         dispatch(setPost({ post: updatedPost }));
       })
       .catch((error) => {
-       
         alert(error.response);
       });
   };
@@ -166,7 +160,7 @@ const PostWidget = ({
       style={{
         width: "100%",
         padding: "15px 25px",
-        minHeight: 200,
+        minHeight: picturePath ? 200 : '',
         margin: matches ? "40px 0 0 130px" : matchesMov ? "20px" : "60px",
       }}
     >
@@ -204,14 +198,15 @@ const PostWidget = ({
           {description}
         </Typography>
       </CardContent>
-
-      <CardMedia
-        component="img"
-        height="auto"
-        image={`${BASE_URL}/assets/${picturePath}`}
-        alt="Paella dish Alt"
-        width="100%"
-      />
+      {picturePath && (
+        <CardMedia
+          component="img"
+          height="auto"
+          image={`${BASE_URL}/assets/${picturePath}`}
+          alt="Paella dish Alt"
+          width="100%"
+        />
+      )}
 
       <CardActions
         style={{ padding: 0, display: "flex", justifyContent: "space-between" }}
@@ -224,14 +219,18 @@ const PostWidget = ({
             marginTop: "20px",
           }}
         >
-          <IconButton aria-label="add to favorites" onClick={patchLike} style={{padding:0}} >
+          <IconButton
+            aria-label="add to favorites"
+            onClick={patchLike}
+            style={{ padding: 0 }}
+          >
             <ThemeProvider theme={theme}>
               <FavoriteOutlined color={isliked ? "primary" : "default"} />
             </ThemeProvider>
           </IconButton>
           <Typography style={{ marginTop: "2px" }}>{likedCount}</Typography>
           <IconButton
-          style={{padding:0, marginLeft:10}}
+            style={{ padding: 0, marginLeft: 10 }}
             aria-label="add to favorites"
             onClick={() => setIsComments(!isComments)}
           >
@@ -248,7 +247,6 @@ const PostWidget = ({
             value={comment}
             placeholder="Write your comment"
             style={{ padding: "10px", borderRadius: "0.75rem", width: "250px" }}
-            
             onChange={(e) => setComment(e.target.value)}
           />
           <SendOutlined
@@ -259,13 +257,11 @@ const PostWidget = ({
         </div>
       </CardActions>
 
-      {(isComments && comments.length == 0) && (
-        <div style={{textAlign:'left',marginTop:10}}>
-          No comments
-        </div>
+      {isComments && comments.length == 0 && (
+        <div style={{ textAlign: "left", marginTop: 10 }}>No comments</div>
       )}
 
-      {(isComments && comments.length > 0) && (
+      {isComments && comments.length > 0 && (
         <Card
           style={{
             marginTop: "1rem",

@@ -45,7 +45,7 @@ const Login = () => {
                         token: loggedIn.token,
                     })
                 );
-                navigate("/home");
+                navigate("/");
             }
             else {
                 alert(loggedIn.message)

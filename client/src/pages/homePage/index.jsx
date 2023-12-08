@@ -5,10 +5,10 @@ import Widget from "../../components/Widget";
 import NewPost from "../../components/NewPost";
 import PostsWidget from "../../components/PostsWidget";
 
+
 const Home = () => {
 
-  const { _id, picturePath } = useSelector((state) => state.user)
-
+  const { _id, picturePath } = useSelector((state) => state.user);
 
   return (
     // <div style={{ display: 'flex', gap: '4em' }}>

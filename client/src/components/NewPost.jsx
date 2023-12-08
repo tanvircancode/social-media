@@ -16,7 +16,8 @@ import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setPosts } from "../store";
+import { setPosts, setResetNewPost } from "../store";
+import { toast } from "react-toastify";
 
 function NewPost({ picturePath }) {
   const dispatch = useDispatch();
@@ -30,12 +31,21 @@ function NewPost({ picturePath }) {
   const token = useSelector((state) => state.token);
   const { _id } = useSelector((state) => state.user);
 
-  const setoNewPost = useSelector((state) => state.newpost);
-
   const onDrop = useCallback((acceptedFiles) => {
     setImage(acceptedFiles[0]);
     setIsImage(!isImage);
   }, []);
+
+
+
+  useEffect(() => {
+     dispatch(setResetNewPost());
+     console.log('sssssssss')
+  },[]);
+
+  var setToNewPost = useSelector((state) => state.newpost);
+  console.log(setToNewPost);
+
   
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -43,6 +53,26 @@ function NewPost({ picturePath }) {
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
+
+    if(!post) {
+
+      var errorMessage = "";
+
+      
+        errorMessage = "Please write something!";
+      
+
+      return toast.error(
+        <div>
+          <p>{errorMessage}</p>
+        </div>,
+        {
+          position: 'top-center',
+          autoClose: 1000,
+        }
+      )
+    }
+   
 
     if (image) {
       formData.append("picture", image);
@@ -60,9 +90,16 @@ function NewPost({ picturePath }) {
         console.log(res);
         const posts = res.data;
         dispatch(setPosts({ posts }));
-        setIsImage(!isImage);
+        setIsImage(false);
         setImage(null);
         setPost("");
+        dispatch(setResetNewPost());
+        toast.success('Posted successfully!',
+        {
+          position: 'top-center',
+          autoClose: 1000,
+        }
+        );
       })
       .catch((error) => alert(error.response.data.message));
   };
@@ -101,7 +138,6 @@ function NewPost({ picturePath }) {
           variant="outlined"
           style={{ padding: "0.5em", borderRadius: "0.75rem", width: "100%" }}
           value={post}
-          disabled={setoNewPost}
           onChange={(e) => setPost(e.target.value)}
         />
       </div>
@@ -119,7 +155,7 @@ function NewPost({ picturePath }) {
         </div>
       )}
 
-      {setoNewPost && (
+      {(setToNewPost && !isImage) && (
         <div
           {...getRootProps()}
           style={{
