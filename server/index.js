@@ -29,8 +29,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(
     {
-        origin: ["https://social-media-frontend-inky.vercel.app"],
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        origin: "https://social-media-frontend-inky.vercel.app",
         credentials: true,
     }
 ));
