@@ -31,6 +31,8 @@ app.use(cors(
     {
         origin: "https://social-media-frontend-inky.vercel.app",
         credentials: true,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        optionsSuccessStatus: 204,
     }
 ));
 app.use(helmet());
