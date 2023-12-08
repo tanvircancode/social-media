@@ -29,7 +29,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(
     {
-        origin: [''],
+        origin: ["https://social-media-frontend-roan-seven.vercel.app/"],
         credentials: true
     }
 ));
