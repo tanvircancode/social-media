@@ -29,11 +29,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(
     {
-<<<<<<< HEAD
         origin: ["https://social-media-frontend-zeta.vercel.app/"],
-=======
-        origin: ["https://social-media-frontend-zeta.vercel.app"],
->>>>>>> 8f5660a74e8ffaa59a860bf046c59184ede7bccc
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
     }
