@@ -27,14 +27,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors(
-    {
-        origin: "https://social-media-frontend-inky.vercel.app",
-        credentials: true,
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        optionsSuccessStatus: 204,
-    }
-));
+app.use(cors());
 app.use(helmet());
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(morgan('common'));
