@@ -1,1 +1,1 @@
-export const BASE_URL = "https://social-media-api-gules.vercel.app";
+export const BASE_URL = "https://social-media-api-five.vercel.app/";
