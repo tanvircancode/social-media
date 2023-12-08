@@ -30,6 +30,7 @@ app.use(express.json());
 app.use(cors(
     {
         origin: ["https://social-media-frontend-roan-seven.vercel.app"],
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true
     }
 ));
